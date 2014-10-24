@@ -16,7 +16,7 @@ class profile::jenkins (
     install_from_source => true,
     source_url          => "http://mirror.symnds.com/software/Apache/tomcat/tomcat-7/v7.0.56/bin/apache-tomcat-7.0.56.tar.gz",
     catalina_base       => $catalina_base,
-    catalina_home => $catalina_home,
+    catalina_home       => $catalina_home,
   }->
   tomcat::setenv::entry { 'JENKINS_HOME':
     value               => "\"-DJENKINS_HOME=${catalina_base}/webapps/jenkins\"",
