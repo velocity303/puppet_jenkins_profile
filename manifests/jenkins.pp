@@ -13,7 +13,6 @@ $tomcat_service = 'tomcat7',
     install_from_source => false,
     package_name        => $tomcat_package,
     catalina_base       => $catalina_base,
-    catalina_home       => $catalina_home,
   }->
   tomcat::setenv::entry { 'JENKINS_HOME':
     value  => "\"-DJENKINS_HOME=${catalina_base}/webapps/jenkins\"",
