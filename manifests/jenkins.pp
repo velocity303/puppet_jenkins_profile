@@ -21,7 +21,7 @@ $tomcat_service = 'tomcat7',
   }->
   tomcat::war { 'jenkins.war' :
     catalina_base => $catalina_base,
-    war_source    => "http://mirrors.jenkins-ci.org/war/latest/jenkins.war"
+    war_source    => "http://mirrors.jenkins-ci.org/war/${version}/jenkins.war"
     notify        => Service [ $tomcat_service ],
   }
   tomcat::service { 'jenkins': 
