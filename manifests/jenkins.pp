@@ -3,7 +3,6 @@ class profile::jenkins (
   $tomcat_major_version = '7',
   $catalina_base = "/opt/apache-tomcat",
   $catalina_home = "${catalina_base}",
- 
 ) {
  class { 'java':
     distribution => 'jre'
