@@ -24,23 +24,29 @@ class profile::jenkins (
     source_strip_first_dir => false,
     catalina_base       => "${catalina_base}",
     catalina_home       => "${catalina_home}",
+    notify              => Tomcat::Setenv::Entry [ 'JENKINS_HOME' ],
     before              => Tomcat::Setenv::Entry [ 'JENKINS_HOME' ],
   }
   tomcat::setenv::entry { 'JENKINS_HOME':
     value               => "\"-DJENKINS_HOME=${catalina_base}/webapps/jenkins\"",
     param               => 'CATALINA_OPTS',
-    before              => Tomcat::War [ "jenkins.war" ],
+    before              => Tomcat::War [ "jenkins-${jenkins_version}.war" ],
+    notify              => Tomcat::War [ "jenkins-${jenkins_version}.war" ],
   }
-  tomcat::war { "jenkins.war" :
+  tomcat::war { "jenkins-${jenkins_version}.war" :
     war_source    => "http://mirrors.jenkins-ci.org/war/${jenkins_version}/jenkins.war",
     catalina_base => "${catalina_base}",
-    war_name      => "jenkins.war",
-    notify        => Tomcat::Service [ "jenkins" ],
-    subscribe     => Tomcat::Instance  [ 'default' ],
+    notify        => File [ "${catalina_base}/webapps/jenkins" ],
+  }
+  file { "${catalina_base}/webapps/jenkins":
+    ensure => 'link',
+    target => "${catalina_base}/webapps/jenkins-${jenkins_version}",
+    before              => Tomcat::War [ "jenkins.war" ],
   }
   tomcat::service { "jenkins":
     catalina_base => "${catalina_base}",
     catalina_home => "${catalina_home}",
     service_name  => "jenkins",
+    subscribe     => File [ "${catalina_base}/webapps/jenkins" ],
   }
 }
