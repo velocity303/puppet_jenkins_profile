@@ -1,9 +1,8 @@
 class profile::jenkins (
-  $jenkins_version = '1.588',
-  $tomcat_major_version = '8',
+  $jenkins_version = 'latest',
+  $tomcat_major_version = '7',
   $catalina_base = "/opt/apache-tomcat",
   $catalina_home = "${catalina_base}",
- 
 ) {
  class { 'java':
     distribution => 'jre'
@@ -41,6 +40,14 @@ class profile::jenkins (
   file { "${catalina_base}/webapps/jenkins":
     ensure => 'link',
     target => "${catalina_base}/webapps/jenkins-${jenkins_version}",
+    before              => Tomcat::War [ "jenkins.war" ],
+  }
+  tomcat::war { "jenkins.war" :
+    war_source    => "http://mirrors.jenkins-ci.org/war/${jenkins_version}/jenkins.war",
+    catalina_base => "${catalina_base}",
+    war_name      => "jenkins.war",
+    notify        => Tomcat::Service [ "jenkins" ],
+    subscribe     => Tomcat::Instance  [ 'default' ],
   }
   tomcat::service { "jenkins":
     catalina_base => "${catalina_base}",
