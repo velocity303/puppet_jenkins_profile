@@ -35,19 +35,13 @@ class profile::jenkins (
   }
   tomcat::war { "jenkins-${jenkins_version}.war" :
     war_source    => "http://mirrors.jenkins-ci.org/war/${jenkins_version}/jenkins.war",
+    catalina_base => "${catalina_base}",
     notify        => File [ "${catalina_base}/webapps/jenkins" ],
   }
   file { "${catalina_base}/webapps/jenkins":
     ensure => 'link',
     target => "${catalina_base}/webapps/jenkins-${jenkins_version}",
     before              => Tomcat::War [ "jenkins.war" ],
-  }
-  tomcat::war { "jenkins.war" :
-    war_source    => "http://mirrors.jenkins-ci.org/war/${jenkins_version}/jenkins.war",
-    catalina_base => "${catalina_base}",
-    war_name      => "jenkins.war",
-    notify        => Tomcat::Service [ "jenkins" ],
-    subscribe     => Tomcat::Instance  [ 'default' ],
   }
   tomcat::service { "jenkins":
     catalina_base => "${catalina_base}",
