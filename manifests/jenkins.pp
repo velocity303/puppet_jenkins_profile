@@ -19,13 +19,13 @@ class profile::jenkins (
     action => accept,
   }
   tomcat::instance{ 'default':
-    install_from_source => true,
-    source_url          => "http://www.us.apache.org/dist/tomcat/tomcat-${tomcat_major_version}/v${tomcat_version}/bin/apache-tomcat-${tomcat_version}.tar.gz",
+    install_from_source    => true,
+    source_url             => "http://www.us.apache.org/dist/tomcat/tomcat-${tomcat_major_version}/v${tomcat_version}/bin/apache-tomcat-${tomcat_version}.tar.gz",
     source_strip_first_dir => false,
-    catalina_base       => "${catalina_base}",
-    catalina_home       => "${catalina_home}",
-    notify              => Tomcat::Setenv::Entry [ 'JENKINS_HOME' ],
-    before              => Tomcat::Setenv::Entry [ 'JENKINS_HOME' ],
+    catalina_base          => "${catalina_base}",
+    catalina_home          => "${catalina_home}",
+    notify                 => Tomcat::Setenv::Entry [ 'JENKINS_HOME' ],
+    before                 => Tomcat::Setenv::Entry [ 'JENKINS_HOME' ],
   }
   tomcat::setenv::entry { 'JENKINS_HOME':
     value               => "\"-DJENKINS_HOME=${catalina_base}/webapps/jenkins\"",
@@ -41,7 +41,6 @@ class profile::jenkins (
   file { "${catalina_base}/webapps/jenkins":
     ensure => 'link',
     target => "${catalina_base}/webapps/jenkins-${jenkins_version}",
-    before              => Tomcat::War [ "jenkins.war" ],
   }
   tomcat::service { "jenkins":
     catalina_base => "${catalina_base}",
